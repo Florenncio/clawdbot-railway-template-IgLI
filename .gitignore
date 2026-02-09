@@ -13,3 +13,14 @@ npm-debug.log*
 
 # OS
 .DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Google Calendar tokens (caso alguém teste localmente e gere arquivos)
+google_calendar_token.json
+*.pickle

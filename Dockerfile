@@ -45,6 +45,8 @@ ENV NODE_ENV=production
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     ca-certificates \
+    python3 \
+    python3-pip \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -61,6 +63,14 @@ RUN printf '%s\n' '#!/usr/bin/env bash' 'exec node /openclaw/dist/entry.js "$@"'
   && chmod +x /usr/local/bin/openclaw
 
 COPY src ./src
+
+# Install Python dependencies for Google Calendar integration
+COPY requirements.txt ./
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Copy Google Calendar script
+COPY openclaw-tools/google_calendar.py /usr/local/bin/google_calendar.py
+RUN chmod +x /usr/local/bin/google_calendar.py
 
 # The wrapper listens on this port.
 ENV OPENCLAW_PUBLIC_PORT=8080
