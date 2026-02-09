@@ -61,7 +61,7 @@ def get_client_config():
             "auth_uri": "https://accounts.google.com/o/oauth2/auth",
             "token_uri": "https://oauth2.googleapis.com/token",
             "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-            "redirect_uris": ["http://localhost"],
+            "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob"],
         }
     }
 
@@ -105,8 +105,20 @@ def authenticate_oauth_flow():
         # Etapa 1: Gerar e exibir URL
         flow = InstalledAppFlow.from_client_config(client_config, SCOPES)
         authorization_url, _ = flow.authorization_url(
-            prompt="consent", access_type="offline", redirect_uri="http://localhost"
+            prompt="consent",
+            access_type="offline",
+            redirect_uri="urn:ietf:wg:oauth:2.0:oob",
         )
+
+        # Garantir que redirect_uri está na URL (adicionar manualmente se necessário)
+        if "redirect_uri" not in authorization_url:
+            from urllib.parse import urlencode, urlparse, parse_qs, urlunparse
+
+            parsed = urlparse(authorization_url)
+            params = parse_qs(parsed.query)
+            params["redirect_uri"] = ["urn:ietf:wg:oauth:2.0:oob"]
+            new_query = urlencode(params, doseq=True)
+            authorization_url = urlunparse(parsed._replace(query=new_query))
 
         print(
             json.dumps(
