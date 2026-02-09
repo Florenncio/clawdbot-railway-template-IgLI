@@ -68,8 +68,8 @@ COPY src ./src
 
 # Install Python dependencies for Google Calendar integration
 COPY requirements.txt ./
-RUN pip3 install --upgrade pip setuptools wheel \
-  && pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install --upgrade pip setuptools wheel --break-system-packages \
+  && pip3 install --no-cache-dir -r requirements.txt --break-system-packages
 
 # Copy Google Calendar script
 COPY openclaw-tools/google_calendar.py /usr/local/bin/google_calendar.py
